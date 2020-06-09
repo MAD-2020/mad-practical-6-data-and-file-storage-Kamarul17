@@ -13,12 +13,15 @@ public class CustomScoreViewHolder extends RecyclerView.ViewHolder {
      */
     private static final String FILENAME = "CustomScoreViewHolder.java";
     private static final String TAG = "Whack-A-Mole3.0!";
+    TextView level;
+    TextView hiScore;
 
     public CustomScoreViewHolder(final View itemView){
         super(itemView);
-
         /* Hint:
         This method dictates the viewholder contents and links the widget to the objects for manipulation.
          */
+        hiScore = itemView.findViewById(R.id.hiScoreTextView);
+        level = itemView.findViewById(R.id.levelrecyclerView);
     }
 }

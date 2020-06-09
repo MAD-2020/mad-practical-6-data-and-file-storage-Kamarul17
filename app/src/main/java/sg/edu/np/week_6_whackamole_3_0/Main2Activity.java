@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
@@ -27,10 +28,21 @@ public class Main2Activity extends AppCompatActivity {
     private static final String FILENAME = "Main2Activity.java";
     private static final String TAG = "Whack-A-Mole3.0!";
 
+    EditText user_editText;
+    EditText pw_editText;
+    Button createButton;
+    Button cancelButton;
+
+    MyDBHandler dbHandler = new MyDBHandler(this,null,null,1);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+
+        final EditText user_editText = findViewById(R.id.username_editText);
+        final EditText pw_editText = findViewById(R.id.pw_editText);
+        Button createButton = findViewById(R.id.createButton);
+        Button cancelButton = findViewById(R.id.cancelButton);
 
         /* Hint:
             This prepares the create and cancel account buttons and interacts with the database to determine
@@ -43,6 +55,39 @@ public class Main2Activity extends AppCompatActivity {
             Log.v(TAG, FILENAME + ": User already exist during new user creation!");
 
          */
+        createButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserData userData = dbHandler.findUser(user_editText.getText().toString());
+                if(userData == null){
+                    String dbUsername = user_editText.getText().toString();
+                    String dbPassword = pw_editText.getText().toString();
+
+                    UserData dbUserData = new UserData();
+                    dbUserData.setMyUserName(dbUsername);
+                    dbUserData.setMyPassword(dbPassword);
+                    dbHandler.addUser(dbUserData);
+
+                    Toast.makeText(Main2Activity.this, "New User Created!", Toast.LENGTH_SHORT).show();
+                    Log.v(TAG, FILENAME + ": New user created successfully!");
+
+                    Intent intent = new Intent(Main2Activity.this, MainActivity.class);
+                    startActivity(intent);
+                }
+                else{
+                    Toast.makeText(Main2Activity.this, "User already exist. \nPLease try again.", Toast.LENGTH_SHORT).show();
+                    Log.v(TAG, FILENAME + ": User already exist during new user creation!");
+                }
+            }
+        });
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Main2Activity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     protected void onStop() {
